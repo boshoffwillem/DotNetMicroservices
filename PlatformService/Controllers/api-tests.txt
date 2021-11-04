@@ -1,0 +1,41 @@
+# -*- restclient -*-
+#
+# Get the swagger page
+#
+GET http://localhost:5000/swagger
+
+#
+# Get all the platforms
+#
+GET http://localhost:5000/api/platforms
+
+#
+# Get platform by Id
+#
+GET http://localhost:5000/api/platforms/3
+
+#
+# Get platform by Id with HTTPS
+#
+GET https://localhost:5001/api/platforms/4
+
+#
+# Create a platform
+#
+POST http://localhost:5000/api/platforms
+Content-Type: application/json
+{
+    "name": "Docker",
+    "publisher": "Docker",
+    "cost": "Free"
+}
+
+#
+# Docker Environment
+#
+GET http://localhost:8080/api/platforms
+
+#
+# K8S
+#
+GET http://localhost:31830/api/platforms
