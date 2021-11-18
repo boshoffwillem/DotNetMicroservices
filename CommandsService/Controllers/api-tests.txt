@@ -1,0 +1,6 @@
+# -*- restclient -*-
+
+#
+# Basic connection test
+#
+POST https://localhost:6001/api/c/platforms

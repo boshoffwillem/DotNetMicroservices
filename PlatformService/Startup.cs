@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using PlatformService.Data;
+using PlatformService.SyncDataService.Http;
 
 namespace PlatformService
 {
@@ -21,16 +22,16 @@ namespace PlatformService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            _ = services
-                .AddDbContext<AppDbContext>(options =>
-                                                options.UseInMemoryDatabase("InMem"))
-                .AddScoped<IPlatformRepository, PlatformRepository>()
-                .AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies())
-                .AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "PlatformService", Version = "v1" });
-                });
-            _ = services.AddControllers();
+            services.AddDbContext<AppDbContext>(options =>
+                                                options.UseInMemoryDatabase("InMem"));
+            services.AddScoped<IPlatformRepository, PlatformRepository>();
+            services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
+            services.AddControllers();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PlatformService", Version = "v1" });
+            });
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
