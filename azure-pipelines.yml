@@ -1,5 +1,10 @@
 trigger:
-- main
+  branches:
+    include:
+    - '*'     # build all branches
+  paths:
+    exclude:
+    - pipeline-templates/*  # don't build for changes in the docs folder
 
 pool:
   vmImage: ubuntu-latest
@@ -20,21 +25,13 @@ steps:
     command: 'restore'
     projects: '**/*.csproj'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Build the project - $(buildConfiguration)'
-  inputs:
-    command: 'build'
-    arguments: '--no-restore --configuration $(buildConfiguration)'
-    projects: '**/*.csproj'
+- template: pipeline-templates/build.yml
+  parameters:
+    buildConfiguration: 'Debug'
 
-- task: DotNetCoreCLI@2
-  displayName: 'Publish the project - $(buildConfiguration)'
-  inputs:
-    command: 'publish'
-    projects: '**/*.csproj'
-    publishWebProjects: false
-    arguments: '--no-build --configuration $(buildConfiguration) --output $(Build.ArtifactStagingDirectory)/$(buildConfiguration)'
-    zipAfterPublish: true
+- template: pipeline-templates/build.yml
+  parameters:
+    buildConfiguration: 'Release'
 
 # Other Build variables
 # $(Build.DefinitionName) specifies the name of the build pipeline. For example, "SpaceGame-Web-CI."
