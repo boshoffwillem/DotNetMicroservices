@@ -7,7 +7,7 @@ trigger:
     - pipeline-templates/*  # don't build for changes in the docs folder
 
 pool:
-  vmImage: ubuntu-latest
+  name: 'Default'
 
 variables:
   buildConfiguration: 'Release'
@@ -19,11 +19,13 @@ steps:
     packageType: sdk
     version: '5.x'
 
-- task: DotNetCoreCLI@2
+- task: NuGetCommand@2
   displayName: 'Restore project dependencies'
   inputs:
     command: 'restore'
-    projects: '**/*.csproj'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
+    vstsFeed: '$(System.TeamProject)/DotNetMicroservices'
 
 - template: pipeline-templates/build.yml
   parameters:
@@ -32,6 +34,14 @@ steps:
 - template: pipeline-templates/build.yml
   parameters:
     buildConfiguration: 'Release'
+
+- task: NugetCommand@2
+  displayName: 'Publish NuGet package'
+  inputs:
+    command: push
+    feedPublish: '$(System.TeamProject)/DotNetMicroservices'
+    allowPackageConflicts: true
+  condition: succeed()
 
 # Other Build variables
 # $(Build.DefinitionName) specifies the name of the build pipeline. For example, "SpaceGame-Web-CI."
