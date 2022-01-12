@@ -41,7 +41,7 @@ steps:
     command: push
     feedPublish: '$(System.TeamProject)/DotNetMicroservices'
     allowPackageConflicts: true
-  condition: succeed()
+  condition: succeeded()
 
 # Other Build variables
 # $(Build.DefinitionName) specifies the name of the build pipeline. For example, "SpaceGame-Web-CI."
