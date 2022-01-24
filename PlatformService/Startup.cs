@@ -43,13 +43,13 @@ namespace PlatformService
                     .UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PlatformService v1"));
             }
 
-            _ = app.UseHttpsRedirection()
-                .UseRouting()
-                .UseAuthorization()
-                .UseEndpoints(endpoints =>
-                {
-                    _ = endpoints.MapControllers();
-                });
+            // app.UseHttpsRedirection();
+            app.UseRouting();
+            app.UseAuthorization();
+            app.UseEndpoints(endpoints =>
+            {
+                _ = endpoints.MapControllers();
+            });
 
             PrepDb.PrepPopulation(app);
         }
