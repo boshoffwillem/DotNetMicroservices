@@ -7,33 +7,34 @@ spec:
   selector:
     matchLabels:
       app: mssql
-    template:
-      metadata:
-        labels:
-          app: mssql
-      spec:
-        containers:
-          - name: mssql
-            image: mcr.microsoft.com/mssql/server:2017-latest
-            ports:
-              - containerPort: 1433
-            env:
-              - name: MSSQL_PID
-                value: "Express"
-              - name: ACCEPT_EULA
-                value: "Y"
-              - name: SA_PASSWORD
-                valueFrom:
-                  secretKeyRef:
-                    name: mssql
-                    key: SA_PASSWORD
-            volumeMounts:
-              - mountPath: /var/opt/mssql/data
-                name: mssqldb
-        volumes:
-          - name: mssqldb
-            persistentVolumeClaim:
-              claimName: mssql-claim
+  template:
+    metadata:
+      labels:
+        app: mssql
+    spec:
+      containers:
+        - name: mssql
+          image: mcr.microsoft.com/mssql/server
+          ports:
+            - containerPort: 1433
+          env:
+            - name: MSSQL_PID
+              value: "Express"
+            - name: ACCEPT_EULA
+              value: "Y"
+            - name: SA_PASSWORD
+              valueFrom:
+                # kubectl create secret generic mssql --from-literal=SA_PASSWORD="SqlServer-77"
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
+          volumeMounts:
+            - mountPath: /var/opt/mssql/data
+              name: mssqldb
+      volumes:
+        - name: mssqldb
+          persistentVolumeClaim:
+            claimName: mssql-claim
 
 ---
 
@@ -48,7 +49,7 @@ spec:
   ports:
     - name: mssql
       protocol: TCP
-      port: 11433
+      port: 1433
       targetPort: 1433
 
 ---
